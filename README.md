@@ -1,6 +1,4 @@
-Plant Watering and Monitoring System
-COMP3000 Computing Project 2022/2023
----
+# COMP3000 - Plant Watering and Monitoring System
 ## Project Vision
 ### Overview
 This project will be for the purpose of computerising the detection of water levels in plant soil in order to adjust these water levels through watering in order to meet the optimum requirements of the plants. By computerising this process, it may be automated and therefore should increase its efficiency and ease.
