@@ -1,8 +1,8 @@
 # Plant Watering and Monitoring System
 ## Module Information
-> Name: COMP3000
-Period: 2022/2023
-Supervisor: Vasilios Kelefouras
+> Name: COMP3000,
+Period: 2022/2023,
+Supervisor: Vasilios Kelefouras.
 ## Project Vision
 ### Overview
 This project will be for the purpose of computerising the detection of environmental information related to plant health and making adjustments to their environment where possible. Notably, it will be for the purpose of measuring water levels in plant soil in order to adjust these water levels through automated watering in order to meet the optimum requirements of the plants. This should increase the efficiency and ease of undertaking these tasks.
