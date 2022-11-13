@@ -7,27 +7,57 @@
     Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="100" BackgroundColor="#08090c">
+        <StackLayout>
             <Label Text="Options" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"></Label>
-        </Grid>
+        </StackLayout>
     </Shell.FlyoutHeader>
 
     <Shell.FlyoutContent>
-        <Grid HeightRequest="100" BackgroundColor="#ff0000">
-            <Label Text="Options" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+        <Grid ColumnDefinitions="*, *" RowDefinitions="*, *, *, *, *, *, *, *" Padding="24">
+            <Label Text="Network" FontSize="24" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="0"></Label>
+            <Label Text="Disconnect Plant" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="1"></Label>
+            <CheckBox HorizontalOptions="End" VerticalOptions="Center" Grid.Column="1" Grid.Row="1">
+
+            </CheckBox>
+
+            <Label Text="Network" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="2"></Label>
+            <CheckBox HorizontalOptions="End" VerticalOptions="Center" Grid.Column="1" Grid.Row="2">
+
+            </CheckBox>
+            <Label Text="Preferences" FontSize="24" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="3"></Label>
+            <Label Text="Dark Mode" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="4"></Label>
+            <CheckBox HorizontalOptions="End" VerticalOptions="Center" Grid.Column="1" Grid.Row="4">
+
+            </CheckBox>
+            <Label Text="Hide on Close" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="5"></Label>
+            <CheckBox HorizontalOptions="End" VerticalOptions="Center" Grid.Column="1" Grid.Row="5">
+
+            </CheckBox>
+            <Button Text="Cancel" FontSize="16" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="0" Grid.Row="6"></Button>
+            <Button Text="Save" FontSize="16" TextColor="Black" HorizontalOptions="Center" VerticalOptions="Center" Grid.Column="1" Grid.Row="6"></Button>
         </Grid>
     </Shell.FlyoutContent>
 
-    <!--<FlyoutItem Title="Options">
+    <FlyoutItem Title="Options">
         <ShellContent
         Title="Plant Watering and Monitoring System"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
-    </FlyoutItem>-->
+    </FlyoutItem>
 
     <!--<FlyoutItem Title="TestFO">
         <ShellContent
         ContentTemplate="{DataTemplate local:OptionsPage}"/>
     </FlyoutItem>-->
+    
+    <!--
+    <Grid HeightRequest="96" BackgroundColor="#08090c">
+            <Label Text="Options" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+        </Grid>
+    
+    <Grid HeightRequest="200" BackgroundColor="#ff0000">
+            <Label Text="Options" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"></Label>
+        </Grid>
+    -->
 
 </Shell>
