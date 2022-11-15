@@ -13,27 +13,27 @@
             <!--<Frame Grid.Column="0" Grid.Row="0" BackgroundColor="#08090c" Grid.RowSpan="6"></Frame>-->
 
             <!--Sensor Headers-->
-            <Label Text="Light" Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" FontSize="32" Margin="32"></Label>
-            <Label Text="16,000 lux" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" FontSize="32" Margin="32"></Label>
-            <Label Text="History" Grid.Column="2" Grid.Row="0" HorizontalOptions="End" FontSize="32" Margin="32"></Label>
+            <Label Text="Light" Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" FontSize="24" Padding="32"></Label>
+            <Label Text="16,000 lux" Grid.Column="1" Grid.Row="0" HorizontalOptions="Center" FontSize="24" Padding="32"></Label>
+            <Label Text="History" Grid.Column="2" Grid.Row="0" HorizontalOptions="End" FontSize="24" Padding="32"></Label>
             <Image Source="graphplaceholder.png" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalOptions="Center" Aspect="AspectFit" ScaleX="0.66" ScaleY="0.66"></Image>
 
-            <Label Text="Moisture" Grid.Column="3" Grid.Row="0" HorizontalOptions="Start" FontSize="32" Margin="32"></Label>
-            <Label Text="Last Reading" Grid.Column="4" Grid.Row="0" HorizontalOptions="Center" FontSize="32" Margin="32"></Label>
-            <Label Text="History" Grid.Column="5" Grid.Row="0" HorizontalOptions="End" FontSize="32" Margin="32"></Label>
+            <Label Text="Moisture" Grid.Column="3" Grid.Row="0" HorizontalOptions="Start" FontSize="24" Padding="32"></Label>
+            <Label Text="Last Reading" Grid.Column="4" Grid.Row="0" HorizontalOptions="Center" FontSize="24" Padding="32"></Label>
+            <Label Text="History" Grid.Column="5" Grid.Row="0" HorizontalOptions="End" FontSize="24" Padding="32"></Label>
             <Image Source="graphplaceholder.png" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="3" HorizontalOptions="Center" Aspect="AspectFit" ScaleX="0.66" ScaleY="0.66"></Image>
 
             <!--Subtitle Bar #2-->
             <Frame Grid.Column="0" Grid.Row="2" BackgroundColor="#08090c" Grid.ColumnSpan="6"></Frame>
 
-            <Label Text="Temperature" Grid.Column="0" Grid.Row="2" HorizontalOptions="Start" FontSize="32" Margin="32"></Label>
-            <Label Text="Last Reading" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" FontSize="32" Margin="32"></Label>
-            <Label Text="History" Grid.Column="2" Grid.Row="2" HorizontalOptions="End" FontSize="32" Margin="32"></Label>
+            <Label Text="Temperature" Grid.Column="0" Grid.Row="2" HorizontalOptions="Start" FontSize="24" Padding="32"></Label>
+            <Label Text="Last Reading" Grid.Column="1" Grid.Row="2" HorizontalOptions="Center" FontSize="24" Padding="32"></Label>
+            <Label Text="History" Grid.Column="2" Grid.Row="2" HorizontalOptions="End" FontSize="24" Padding="32"></Label>
             <Image Source="graphplaceholder.png" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" HorizontalOptions="Center" Aspect="AspectFit" ScaleX="0.66" ScaleY="0.66"></Image>
 
-            <Label Text="Humidity" Grid.Column="3" Grid.Row="2" HorizontalOptions="Start" FontSize="32" Margin="32"></Label>
-            <Label Text="Last Reading" Grid.Column="4" Grid.Row="2" HorizontalOptions="Center" FontSize="32" Margin="32"></Label>
-            <Label Text="History" Grid.Column="5" Grid.Row="2" HorizontalOptions="End" FontSize="32" Margin="32"></Label>
+            <Label Text="Humidity" Grid.Column="3" Grid.Row="2" HorizontalOptions="Start" FontSize="24" Padding="32"></Label>
+            <Label Text="Last Reading" Grid.Column="4" Grid.Row="2" HorizontalOptions="Center" FontSize="24" Padding="32"></Label>
+            <Label Text="History" Grid.Column="5" Grid.Row="2" HorizontalOptions="End" FontSize="24" Padding="32"></Label>
             <Image Source="graphplaceholder.png" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="3" HorizontalOptions="Center" Aspect="AspectFit" ScaleX="0.66" ScaleY="0.66"></Image>
         </Grid>
     </ScrollView>

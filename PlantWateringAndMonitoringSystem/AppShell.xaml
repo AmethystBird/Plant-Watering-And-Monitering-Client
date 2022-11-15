@@ -20,7 +20,7 @@
 
             </CheckBox>
 
-            <Label Text="Network" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="2"></Label>
+            <Label Text="Forget Plant" FontSize="16" HorizontalOptions="Start" VerticalOptions="Center" Grid.Column="0" Grid.Row="2"></Label>
             <CheckBox HorizontalOptions="End" VerticalOptions="Center" Grid.Column="1" Grid.Row="2">
 
             </CheckBox>
