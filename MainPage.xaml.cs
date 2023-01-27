@@ -1,14 +1,18 @@
 ﻿//using Android.Content.Res;
 
-namespace PlantWateringAndMonitoringSystem;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore;
+using System.Collections.ObjectModel;
 
+namespace PlantWateringAndMonitoringSystem;
 public partial class MainPage : ContentPage
 {
     float lightValue;
 	float moistureValue;
 	float temperatureValue;
 	float humidityValue;
-	public MainPage()
+    SensorGraph testSensorGraph;
+    public MainPage()
 	{
 		InitializeComponent();
 
@@ -16,6 +20,9 @@ public partial class MainPage : ContentPage
 		moistureValue = 1.0f;
 		temperatureValue = 2.0f;
 		humidityValue = 4.0f;
+
+        testSensorGraph = new SensorGraph();
+        BindingContext = testSensorGraph.Series;
     }
 	async void OnSensorButtonClicked(object sender, EventArgs e)
 	{

@@ -1,4 +1,7 @@
-﻿namespace PlantWateringAndMonitoringSystem;
+﻿using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+
+namespace PlantWateringAndMonitoringSystem;
 
 public partial class App : Application
 {
@@ -7,5 +10,11 @@ public partial class App : Application
 		InitializeComponent();
 
 		MainPage = new AppShell();
+
+		LiveCharts.Configure(config => config
+		.AddSkiaSharp()
+		.AddDefaultMappers()
+		.AddLightTheme()
+		);
 	}
 }
