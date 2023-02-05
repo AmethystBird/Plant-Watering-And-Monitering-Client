@@ -3,6 +3,7 @@
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore;
 using System.Collections.ObjectModel;
+using LiveChartsCore.SkiaSharpView.Painting;
 
 namespace PlantWateringAndMonitoringSystem;
 public partial class MainPage : ContentPage
@@ -11,18 +12,30 @@ public partial class MainPage : ContentPage
 	float moistureValue;
 	float temperatureValue;
 	float humidityValue;
-    SensorGraph testSensorGraph;
+    //public ISeries[] Series { get; set; }
+    public string bigChungus { get; set; } = "Light";
+    //public ISeries[] bigChungus2;
     public MainPage()
 	{
-		InitializeComponent();
+        /*Series = new ISeries[]
+        {
+            new LineSeries<double>
+            {
+                Values = new ObservableCollection<double> {3, 2, 4, 9, 2, 3},
+                //Values = new double[] {3, 2, 4, 4, 9, 6, 32},
+
+                Stroke = new SolidColorPaint(SkiaSharp.SKColors.Blue) {StrokeThickness = 4 },
+
+                Fill = null
+            }
+        };*/
+
+        InitializeComponent();
 
 		lightValue = 0.0f;
 		moistureValue = 1.0f;
 		temperatureValue = 2.0f;
 		humidityValue = 4.0f;
-
-        testSensorGraph = new SensorGraph();
-        BindingContext = testSensorGraph.Series;
     }
 	async void OnSensorButtonClicked(object sender, EventArgs e)
 	{

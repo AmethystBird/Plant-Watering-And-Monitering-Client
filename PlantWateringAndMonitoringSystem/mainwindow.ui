@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="titleLabel">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="text">
+     <string>Plant Watering and Monitoring System</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>40</y>
+      <width>141</width>
+      <height>511</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="optionsMenu">
+     <item row="0" column="0">
+      <widget class="QFrame" name="optionsMenuFrame">
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QCheckBox" name="sendNotificationsCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>190</y>
+          <width>128</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Send Notifications</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="disconnectPlantButton">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>60</y>
+          <width>111</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Disconnect Plant</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="forgetPlantButton">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>90</y>
+          <width>111</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Forget Plant</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="hideOnCloseCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>170</y>
+          <width>128</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Hide on Close</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="optionsLabel">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>128</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Options</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="darkModeCheckBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>128</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Dark Mode</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="networkingLabel">
+        <property name="geometry">
+         <rect>
+          <x>7</x>
+          <y>30</y>
+          <width>121</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Networking</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="preferencesLabel">
+        <property name="geometry">
+         <rect>
+          <x>11</x>
+          <y>120</y>
+          <width>111</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>128</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Preferences</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QToolButton" name="optionsButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>21</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>...</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>40</y>
+      <width>661</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="text">
+        <string>Light</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Moisture</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Temperature</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Humidity</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
