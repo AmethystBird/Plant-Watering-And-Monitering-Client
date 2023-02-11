@@ -15,15 +15,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
-    void on_optionsButton_released();
-
-    void on_darkModeCheckBox_released();
-
 private:
     Ui::MainWindow *ui;
-
-    void ToggleDisplayMode();
-    bool displayMode;
 };
 #endif // MAINWINDOW_H

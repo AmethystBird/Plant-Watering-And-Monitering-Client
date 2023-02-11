@@ -11,8 +11,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Charts)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Charts)           #ADDED THIS
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Charts)      #ADDED THIS
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)             #ADDED THIS
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)        #ADDED THIS
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Gui)              #ADDED THIS
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Gui)         #ADDED THIS
 
 set(PROJECT_SOURCES
         main.cpp
@@ -45,9 +49,12 @@ else()
 endif()
 
 target_link_libraries(PlantWateringAndMonitoringSystem PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-#Charts
-target_link_libraries(PlantWateringAndMonitoringSystem PRIVATE Qt${QT_VERSION_MAJOR}::Charts)
+target_link_libraries(
+    PlantWateringAndMonitoringSystem PUBLIC
+    Qt${QT_VERSION_MAJOR}::Charts   #ADDED THIS
+    Qt${QT_VERSION_MAJOR}::Core     #ADDED THIS
+    Qt${QT_VERSION_MAJOR}::Gui      #ADDED THIS
+)
 
 set_target_properties(PlantWateringAndMonitoringSystem PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
