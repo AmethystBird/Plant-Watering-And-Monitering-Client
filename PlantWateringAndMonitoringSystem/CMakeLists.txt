@@ -9,6 +9,14 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Set Azure IoT SDK C settings
+#set(use_mqtt ON CACHE  BOOL "Set mqtt on" FORCE )
+#set(skip_samples ON CACHE  BOOL "Set slip_samples on" FORCE )
+#set(BUILD_TESTING OFF CACHE  BOOL "Set BUILD_TESTING off" FORCE )
+
+# Add Azure IoT SDK C
+#add_subdirectory(azure-iot-sdk-c out)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Charts)           #ADDED THIS
@@ -24,6 +32,13 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 )
+
+#Conditionally use the SDK trusted certs in the samples
+#if(${use_sample_trusted_cert})
+#    add_definitions(-DSET_TRUSTED_CERT_IN_SAMPLES)
+#    include_directories(${PROJECT_SOURCE_DIR}/certs)
+#    set(iothub_c_files ${iothub_c_files} ${PROJECT_SOURCE_DIR}/certs/certs.c)
+#endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(PlantWateringAndMonitoringSystem
