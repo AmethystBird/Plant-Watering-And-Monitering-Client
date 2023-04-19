@@ -1,7 +1,11 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "QMessageBox"
+
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
+#include <QtMqtt/QtMqtt>
+//#include <QtMqtt/QMqttSubscription>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,6 +36,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     ui->verticalLayout->addWidget(chartView);
+
+    //MQTT
+    CreateMQTTClient();
+    Subscribe();
 }
 
 MainWindow::~MainWindow()
@@ -94,4 +102,61 @@ void MainWindow::on_optionsButton_released()
 void MainWindow::on_darkModeCheckBox_released()
 {
     ToggleDisplayMode();
+}
+
+void MainWindow::CreateMQTTClient()
+{
+    //MQTT subscription setup
+    MQTTPlantClient = new QMqttClient();
+    //MQTTPlantSubscription = new QMqttSubscription();
+
+    //Sort these credentials
+    MQTTPlantClient->setHostname("nucleo01");
+    MQTTPlantClient->setPort(19216816);
+
+    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
+    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
+    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
+    connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
+}
+
+void MainWindow::Subscribe()
+{
+    const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
+
+    MQTTPlantSubscription = MQTTPlantClient->subscribe(*topic, 0);
+
+    if (!MQTTPlantSubscription)
+    {
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+        return;
+    }
+}
+
+void MainWindow::ReceiveTest()
+{
+    //QString telemetry = MQTTPlantSubscription->topic().filter();
+    //ui->titleLabel->setText(telemetry);
+}
+
+//Update telemetry
+void MainWindow::StateChanged()
+{
+    receivedTelemetry = MQTTPlantClient->state();
+    ui->titleLabel->setText(QString::number(receivedTelemetry));
+}
+
+void MainWindow::Disconnected()
+{
+    //No particular requirements
+}
+
+void MainWindow::Received()
+{
+    //No particular requirements
+}
+
+void MainWindow::Pinged()
+{
+    //No particular requirements
 }

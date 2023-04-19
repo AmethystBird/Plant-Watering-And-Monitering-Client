@@ -17,6 +17,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add Azure IoT SDK C
 #add_subdirectory(azure-iot-sdk-c out)
 
+#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Mqtt)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Mqtt Network)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Mqtt Network)
+#find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Mqtt)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Charts)           #ADDED THIS
@@ -64,11 +69,14 @@ else()
 endif()
 
 target_link_libraries(PlantWateringAndMonitoringSystem PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+#target_link_libraries(PlantWateringAndMonitoringSystem PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Mqtt)
 target_link_libraries(
     PlantWateringAndMonitoringSystem PUBLIC
     Qt${QT_VERSION_MAJOR}::Charts   #ADDED THIS
     Qt${QT_VERSION_MAJOR}::Core     #ADDED THIS
     Qt${QT_VERSION_MAJOR}::Gui      #ADDED THIS
+    Qt${QT_VERSION_MAJOR}::Mqtt
+    Qt${QT_VERSION_MAJOR}::Network
 )
 
 set_target_properties(PlantWateringAndMonitoringSystem PROPERTIES

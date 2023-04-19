@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "QtMqtt/qmqttclient.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -25,5 +26,26 @@ private:
 
     void ToggleDisplayMode();
     bool displayMode;
+
+    QMqttClient* MQTTPlantClient;
+    QMqttSubscription* MQTTPlantSubscription;
+
+    void CreateMQTTClient();
+    void Subscribe();
+    void ReceiveTest();
+
+    //Tagged methods
+    void StateChanged();
+    void Disconnected();
+    void Received();
+    void Pinged();
+
+    qint16 receivedTelemetry;
 };
 #endif // MAINWINDOW_H
+
+/*
+    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
+    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
+    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
+*/
