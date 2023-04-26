@@ -21,6 +21,8 @@ private slots:
 
     void on_darkModeCheckBox_released();
 
+    void on_connectPlantButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -34,7 +36,7 @@ private:
     void Subscribe();
     void ReceiveTest();
 
-    //Tagged methods
+    //Callback bound methods
     void StateChanged();
     void Disconnected();
     void Received(const QByteArray &message, const QMqttTopicName &topic);

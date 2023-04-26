@@ -191,7 +191,7 @@
         <string>Networking</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="disconnectPlantButton">
+      <widget class="QPushButton" name="connectPlantButton">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -213,10 +213,10 @@
         </size>
        </property>
        <property name="text">
-        <string>Disconnect Plant</string>
+        <string>Connect Plant</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="forgetPlantButton">
+      <widget class="QPushButton" name="addTopicButton">
        <property name="geometry">
         <rect>
          <x>0</x>
@@ -238,7 +238,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Forget Plant</string>
+        <string>Add Topic</string>
        </property>
       </widget>
       <widget class="QLabel" name="preferencesLabel">

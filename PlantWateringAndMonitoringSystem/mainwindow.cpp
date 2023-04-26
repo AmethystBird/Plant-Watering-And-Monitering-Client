@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->verticalLayout->addWidget(chartView);
 
     //MQTT
-    CreateMQTTClient();
-    Subscribe();
+    //CreateMQTTClient();
+    //Subscribe();
 }
 
 MainWindow::~MainWindow()
@@ -59,8 +59,8 @@ void MainWindow::ToggleDisplayMode()
         ui->optionsLabel->setStyleSheet("color: #e0e0e0");
         ui->networkingLabel->setStyleSheet("color: #e0e0e0");
         ui->preferencesLabel->setStyleSheet("color: #e0e0e0");
-        ui->disconnectPlantButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
-        ui->forgetPlantButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
+        ui->connectPlantButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
+        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
         ui->darkModeCheckBox->setStyleSheet("color: #e0e0e0");
         ui->hideOnCloseCheckBox->setStyleSheet("color: #e0e0e0");
         ui->sendNotificationsCheckBox->setStyleSheet("color: #e0e0e0");
@@ -79,8 +79,8 @@ void MainWindow::ToggleDisplayMode()
         ui->optionsLabel->setStyleSheet("color: #202020");
         ui->networkingLabel->setStyleSheet("color: #202020");
         ui->preferencesLabel->setStyleSheet("color: #202020");
-        ui->disconnectPlantButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
-        ui->forgetPlantButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
+        ui->connectPlantButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
+        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
         ui->darkModeCheckBox->setStyleSheet("color: #202020");
         ui->hideOnCloseCheckBox->setStyleSheet("color: #202020");
         ui->sendNotificationsCheckBox->setStyleSheet("color: #202020");
@@ -200,3 +200,15 @@ void MainWindow::Pinged()
     //No particular requirements
     QMessageBox::information(this, QLatin1String("Ping"), QLatin1String("Ping."));
 }
+
+void MainWindow::on_connectPlantButton_clicked()
+{
+//    QQuickView* popupWindow = new QQuickView();
+//    popupWindow->setSource(QUrl("qrc:/connectPlantPopupWindow.qml"));
+//    popupWindow->setFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+//    popupWindow->show();
+
+    //CreateMQTTClient();
+    //Subscribe();
+}
+
