@@ -107,30 +107,65 @@ void MainWindow::on_darkModeCheckBox_released()
 void MainWindow::CreateMQTTClient()
 {
     //MQTT subscription setup
-    MQTTPlantClient = new QMqttClient();
+    MQTTPlantClient = new QMqttClient(this);
+    if (!MQTTPlantClient) {
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not instamntiate QMqttClient?"));
+        return;
+    }
     //MQTTPlantSubscription = new QMqttSubscription();
 
     //Sort these credentials
-    MQTTPlantClient->setHostname("nucleo01");
-    MQTTPlantClient->setPort(19216816);
+    const QString hostname = "192.168.1.6";
+    MQTTPlantClient->setHostname(hostname);
+
+    //MQTTPlantClient->setPort(quint16(1883));
+    quint16 port = 1883;
+    MQTTPlantClient->setPort(port);
+
+    const QString clientID = "qt01";
+    MQTTPlantClient->setClientId(clientID);
+
+    const QString username = "qtapp";
+    MQTTPlantClient->setUsername(username);
+
+    const QString password = "1234";
+    MQTTPlantClient->setPassword(password);
 
     connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
     connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
-    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
+    //connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
     connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
+
+    //test
+    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
+        const QString content = QDateTime::currentDateTime().toString()
+                                + QLatin1String(" Received Topic: ")
+                                + topic.name()
+                                + QLatin1String(" Message: ")
+                                + message
+                                + QLatin1Char('\n');
+        ui->telemetryDebugLabel->setText(content);
+    });
+
+    MQTTPlantClient->connectToHost();
 }
 
 void MainWindow::Subscribe()
 {
-    const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
-
-    MQTTPlantSubscription = MQTTPlantClient->subscribe(*topic, 0);
-
     if (!MQTTPlantSubscription)
     {
         QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
         return;
     }
+    else {
+        QMessageBox::information(this, QLatin1String("Success"), QLatin1String("Successfully subscribed!"));
+    }
+
+    //const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
+    //auto topic = new QMqttTopicFilter("chilli/light");
+
+    const QString topic2 = "chilli/light";
+    MQTTPlantSubscription = MQTTPlantClient->subscribe(topic2, 0); //0; message loss can occur
 }
 
 void MainWindow::ReceiveTest()
@@ -149,14 +184,19 @@ void MainWindow::StateChanged()
 void MainWindow::Disconnected()
 {
     //No particular requirements
+    QMessageBox::information(this, QLatin1String("Disconnection"), QLatin1String("Broker server disconnected from client."));
 }
 
-void MainWindow::Received()
+void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic)
 {
     //No particular requirements
+    //QMessageBox::information(this, QLatin1String("Received()"), QLatin1String("messageReceived() >> Received()"));
+
+    ui->telemetryDebugLabel->setText((const QString)message);
 }
 
 void MainWindow::Pinged()
 {
     //No particular requirements
+    QMessageBox::information(this, QLatin1String("Ping"), QLatin1String("Ping."));
 }

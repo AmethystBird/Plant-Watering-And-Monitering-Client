@@ -37,7 +37,7 @@ private:
     //Tagged methods
     void StateChanged();
     void Disconnected();
-    void Received();
+    void Received(const QByteArray &message, const QMqttTopicName &topic);
     void Pinged();
 
     qint16 receivedTelemetry;
