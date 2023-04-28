@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QMessageBox"
+#include "connectplantdialog.h"
+
+#include "connectplantdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -109,13 +112,13 @@ void MainWindow::CreateMQTTClient()
     //MQTT subscription setup
     MQTTPlantClient = new QMqttClient(this);
     if (!MQTTPlantClient) {
-        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not instamntiate QMqttClient?"));
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not instantiate QMqttClient"));
         return;
     }
     //MQTTPlantSubscription = new QMqttSubscription();
 
     //Sort these credentials
-    const QString hostname = "192.168.1.6";
+    /*const QString hostname = "192.168.1.6";
     MQTTPlantClient->setHostname(hostname);
 
     //MQTTPlantClient->setPort(quint16(1883));
@@ -129,7 +132,7 @@ void MainWindow::CreateMQTTClient()
     MQTTPlantClient->setUsername(username);
 
     const QString password = "1234";
-    MQTTPlantClient->setPassword(password);
+    MQTTPlantClient->setPassword(password);*/
 
     connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
     connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
@@ -147,7 +150,7 @@ void MainWindow::CreateMQTTClient()
         ui->telemetryDebugLabel->setText(content);
     });
 
-    MQTTPlantClient->connectToHost();
+    //MQTTPlantClient->connectToHost();
 }
 
 void MainWindow::Subscribe()
@@ -210,5 +213,13 @@ void MainWindow::on_connectPlantButton_clicked()
 
     //CreateMQTTClient();
     //Subscribe();
+    ConnectPlantDialog dlg(this);
+    dlg.setModal(true);
+    dlg.SetMainWindow(this);
+    dlg.exec();
 }
 
+QMqttClient* MainWindow::GetMQTTPlantClient()
+{
+    return MQTTPlantClient;
+}

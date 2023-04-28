@@ -16,6 +16,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QMqttClient* GetMQTTPlantClient();
+
 private slots:
     void on_optionsButton_released();
 
@@ -26,11 +28,11 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    void ToggleDisplayMode();
-    bool displayMode;
-
     QMqttClient* MQTTPlantClient;
     QMqttSubscription* MQTTPlantSubscription;
+
+    void ToggleDisplayMode();
+    bool displayMode;
 
     void CreateMQTTClient();
     void Subscribe();

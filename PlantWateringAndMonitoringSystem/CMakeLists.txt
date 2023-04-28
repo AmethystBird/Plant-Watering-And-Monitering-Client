@@ -40,6 +40,9 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        connectplantdialog.h
+        connectplantdialog.cpp
+        connectplantdialog.ui
 )
 
 #Conditionally use the SDK trusted certs in the samples
