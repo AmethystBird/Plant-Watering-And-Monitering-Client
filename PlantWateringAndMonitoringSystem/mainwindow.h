@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include "QtMqtt/qmqttclient.h"
+#include "qchart.h"
+#include "qlineseries.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -37,6 +39,7 @@ private:
     void CreateMQTTClient();
     void Subscribe();
     void ReceiveTest();
+    void DebugMQTT();
 
     //Callback bound methods
     void StateChanged();
@@ -45,6 +48,10 @@ private:
     void Pinged();
 
     qint16 receivedTelemetry;
+
+    //Chart
+    QChart *chart = new QChart();
+    QLineSeries *series = new QLineSeries();
 };
 #endif // MAINWINDOW_H
 

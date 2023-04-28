@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     ToggleDisplayMode();
     ui->darkModeCheckBox->setChecked(true);
 
-    QLineSeries *series = new QLineSeries();
+    /*QLineSeries *series = new QLineSeries();
     series->append(0, 6);
     series->append(2, 4);
     series->append(3, 8);
@@ -28,21 +28,22 @@ MainWindow::MainWindow(QWidget *parent)
     series->append(10, 5);
     *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
 
-    QChart *chart = new QChart();
+    QChart *chart = new QChart();*/
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    chart->setTitle("Simple line chart example");
+    chart->setTitle("<Sensor Value>");
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     ui->verticalLayout->addWidget(chartView);
 
     //MQTT
-    //CreateMQTTClient();
-    //Subscribe();
+    ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
+    DebugMQTT();
 }
 
 MainWindow::~MainWindow()
@@ -105,6 +106,53 @@ void MainWindow::on_optionsButton_released()
 void MainWindow::on_darkModeCheckBox_released()
 {
     ToggleDisplayMode();
+}
+
+void MainWindow::DebugMQTT()
+{
+    //MQTT subscription setup
+    MQTTPlantClient = new QMqttClient(this);
+    if (!MQTTPlantClient) {
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not instantiate QMqttClient"));
+        return;
+    }
+    //MQTTPlantSubscription = new QMqttSubscription();
+
+    //Sort these credentials
+    const QString hostname = "192.168.1.6";
+    MQTTPlantClient->setHostname(hostname);
+
+    //MQTTPlantClient->setPort(quint16(1883));
+    quint16 port = 1883;
+    MQTTPlantClient->setPort(port);
+
+    const QString clientID = "qt01";
+    MQTTPlantClient->setClientId(clientID);
+
+    const QString username = "qtapp";
+    MQTTPlantClient->setUsername(username);
+
+    const QString password = "1234";
+    MQTTPlantClient->setPassword(password);
+
+    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
+    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
+    //connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
+    connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
+
+    //test
+    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
+        const QString content = QDateTime::currentDateTime().toString()
+                                + QLatin1String(" Received Topic: ")
+                                + topic.name()
+                                + QLatin1String(" Message: ")
+                                + message
+                                + QLatin1Char('\n');
+        ui->telemetryDebugLabel->setText(content);
+    });
+
+    MQTTPlantClient->connectToHost();
+    Subscribe();
 }
 
 void MainWindow::CreateMQTTClient()
@@ -195,6 +243,20 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     //No particular requirements
     //QMessageBox::information(this, QLatin1String("Received()"), QLatin1String("messageReceived() >> Received()"));
 
+    quint16 untilSeconds = 0;
+    for (quint16 i = 0; i < message.size(); i++)
+    {
+        if (message[i] == ':')
+        {
+            untilSeconds++;
+        }
+        else if (untilSeconds == 2)
+        {
+
+        }
+    }
+
+    //series->append()
     ui->telemetryDebugLabel->setText((const QString)message);
 }
 
