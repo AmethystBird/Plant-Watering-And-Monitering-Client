@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include "QtMqtt/qmqttclient.h"
+#include "connectplantdialog.h"
 #include "qchart.h"
+#include "qchartview.h"
 #include "qlineseries.h"
 #include <QMainWindow>
 
@@ -49,9 +51,12 @@ private:
 
     qint16 receivedTelemetry;
 
+    ConnectPlantDialog dlg;
+
     //Chart
-    QChart *chart = new QChart();
-    QLineSeries *series = new QLineSeries();
+    QChart *chart;
+    QLineSeries *series;
+    QChartView *chartView;
 };
 #endif // MAINWINDOW_H
 

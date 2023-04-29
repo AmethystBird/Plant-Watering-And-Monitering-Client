@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QMessageBox"
-#include "connectplantdialog.h"
-
-#include "connectplantdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -12,7 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), dlg(this)
 {
     ui->setupUi(this);
 
@@ -20,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ToggleDisplayMode();
     ui->darkModeCheckBox->setChecked(true);
 
-    /*QLineSeries *series = new QLineSeries();
+    series = new QLineSeries();
     series->append(0, 6);
     series->append(2, 4);
     series->append(3, 8);
@@ -28,13 +25,13 @@ MainWindow::MainWindow(QWidget *parent)
     series->append(10, 5);
     *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
 
-    QChart *chart = new QChart();*/
+    chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
     chart->setTitle("<Sensor Value>");
 
-    QChartView *chartView = new QChartView(chart);
+    chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
 
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -44,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     //MQTT
     ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
     DebugMQTT();
+
+    //Signals
+    QObject::connect(&dlg, SIGNAL(CredentialsApplied()), this, SIGNAL(GetMQTTPlantClient())); //Connects click event of apply button to credentials applied function
 }
 
 MainWindow::~MainWindow()
@@ -243,18 +243,45 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     //No particular requirements
     //QMessageBox::information(this, QLatin1String("Received()"), QLatin1String("messageReceived() >> Received()"));
 
-    quint16 untilSeconds = 0;
+    //QDateTime momentInTime = QDateTime::currentDateTime();
+    //QDate date = QDate::currentDate();
+
+    /*QLineSeries *series2 = new QLineSeries();
+    series2->append(4, 8);
+    //*series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
+
+    chart->legend()->hide();
+    chart->addSeries(series2);
+    chart->createDefaultAxes();
+    chart->setTitle("<Sensor Value>");
+
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);*/
+
+    /*QLineSeries *series2 = new QLineSeries();
+    series2->append(5, 10);
+    chart->addSeries(series2);
+    chart->createDefaultAxes();*/
+
+    chart->removeSeries(series);
+    series->append(4, 8);
+    chart->addSeries(series);
+    chart->createDefaultAxes();
+    chartView->update();
+
+    /*quint16 extractionDeterminer = 0;
     for (quint16 i = 0; i < message.size(); i++)
     {
-        if (message[i] == ':')
+        if (message[i] == ':' && extractionDeterminer < 2)
         {
-            untilSeconds++;
+            extractionDeterminer++;
         }
-        else if (untilSeconds == 2)
+        else if (extractionDeterminer == 2)
         {
 
         }
-    }
+    }*/
 
     //series->append()
     ui->telemetryDebugLabel->setText((const QString)message);
@@ -275,13 +302,14 @@ void MainWindow::on_connectPlantButton_clicked()
 
     //CreateMQTTClient();
     //Subscribe();
-    ConnectPlantDialog dlg(this);
+    //ConnectPlantDialog dlg(this);
     dlg.setModal(true);
-    dlg.SetMainWindow(this);
+    //dlg.SetMainWindow(this);
     dlg.exec();
 }
 
 QMqttClient* MainWindow::GetMQTTPlantClient()
 {
+    QMessageBox::information(this, QLatin1String("GetMQTTPlantClient()"), QLatin1String("Executed by proxy"));
     return MQTTPlantClient;
 }

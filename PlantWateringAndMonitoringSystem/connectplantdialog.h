@@ -1,7 +1,6 @@
 #ifndef CONNECTPLANTDIALOG_H
 #define CONNECTPLANTDIALOG_H
 
-#include "mainwindow.h"
 #include <QDialog>
 
 namespace Ui {
@@ -16,7 +15,7 @@ public:
     explicit ConnectPlantDialog(QWidget *parent = nullptr);
     ~ConnectPlantDialog();
 
-    void SetMainWindow(MainWindow* MainWindowIn);
+    //void SetMainWindow(MainWindow* MainWindowIn);
 
 private slots:
 
@@ -27,7 +26,10 @@ private slots:
 private:
     Ui::ConnectPlantDialog *ui;
 
-    MainWindow* w;
+    //MainWindow* w;
+
+signals:
+    void CredentialsApplied();
 };
 
 #endif // CONNECTPLANTDIALOG_H
