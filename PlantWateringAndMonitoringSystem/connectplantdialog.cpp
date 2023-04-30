@@ -23,6 +23,11 @@ ConnectPlantDialog::~ConnectPlantDialog()
     delete ui;
 }
 
+Ui::ConnectPlantDialog* ConnectPlantDialog::GetUI()
+{
+    return ui;
+}
+
 /*void ConnectPlantDialog::SetMainWindow(MainWindow* MainWindowIn)
 {
     w = MainWindowIn;

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QMessageBox"
+#include "ui_connectplantdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -79,6 +80,10 @@ void MainWindow::ToggleDisplayMode()
         ui->humidityButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
         ui->temperatureButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
         ui->optionsButton->setStyleSheet("QToolButton {background-color: #202020; color: #e0e0e0;}");
+
+        //Connect plant dialog
+        //Ui::ConnectPlantDialog* connectPlantDialogUI = dlg.GetUI();
+        //connectPlantDialogUI->applyButton;
     }
     else
     {
@@ -270,31 +275,79 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     chart->addSeries(series2);
     chart->createDefaultAxes();*/
 
+    //Temporary data
     series = new QLineSeries();
     series->append(2, 8);
     series->append(4, 3);
     series->append(6, 7);
+
+    //Formatting of data
+    //quint16 extractionDeterminer = 0;
+
+    QString value = "";
+    QString hours = "";
+    QString minutes = "";
+    QString seconds = "";
+
+    for (quint16 i = 0; i < message.size(); i++)
+    {
+        if (message[i] == 'V')
+        {
+            i+=3;
+
+            while (message[i] != ' ')
+            {
+                value+= message[i];
+                i++;
+            }
+        }
+        else if (message[i] == 'H')
+        {
+            i+=3;
+
+            while (message[i] != ' ')
+            {
+                hours+= message[i];
+                i++;
+            }
+        }
+        else if (message[i] == 'M')
+        {
+            i+=3;
+
+            while (message[i] != ' ')
+            {
+                minutes+= message[i];
+                i++;
+            }
+        }
+        else if (message[i] == 'S')
+        {
+            i+=3;
+
+            while (i != message.size())
+            {
+                seconds+= message[i];
+                i++;
+            }
+        }
+    }
+
+    ui->telemetryDebugLabel->setText((const QString)value + " " + (const QString)hours + " " + (const QString)minutes + " " + (const QString)seconds);
+
+    //Append data
+    /*for (int i = 0; i < seriesData.size(); i++)
+    {
+
+    }*/
 
     chart->removeAllSeries();
     chart->addSeries(series);
     chart->createDefaultAxes();
     chart->update();
 
-    /*quint16 extractionDeterminer = 0;
-    for (quint16 i = 0; i < message.size(); i++)
-    {
-        if (message[i] == ':' && extractionDeterminer < 2)
-        {
-            extractionDeterminer++;
-        }
-        else if (extractionDeterminer == 2)
-        {
-
-        }
-    }*/
-
     //series->append()
-    ui->telemetryDebugLabel->setText((const QString)message);
+    //ui->telemetryDebugLabel->setText((const QString)message);
 }
 
 void MainWindow::Pinged()

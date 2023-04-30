@@ -21,6 +21,8 @@ public:
     QString GetUsername();
     QString GetPassword();
 
+    Ui::ConnectPlantDialog* GetUI();
+
     //void SetMainWindow(MainWindow* MainWindowIn);
 
 private slots:
