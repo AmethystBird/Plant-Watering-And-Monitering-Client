@@ -15,7 +15,7 @@ ConnectPlantDialog::ConnectPlantDialog(QWidget *parent) :
     //w = (MainWindow*)parent;
 
     //Signals
-    QObject::connect(ui->applyButton, SIGNAL(clicked()), this, SIGNAL(CredentialsApplied())); //Connects click event of apply button to credentials applied function
+    //QObject::connect(ui->applyButton, SIGNAL(clicked()), this, SIGNAL(CredentialsApplied())); //Connects click event of apply button to credentials applied function
 }
 
 ConnectPlantDialog::~ConnectPlantDialog()
@@ -42,40 +42,51 @@ void ConnectPlantDialog::on_applyButton_clicked()
     }*/
 
     //Sort these credentials
-    const QString hostname = ui->hostnameLineEdit->text();
-    //w->GetMQTTPlantClient()->setHostname(hostname);
-
-    const QString port = ui->portLineEdit->text();
-    quint16 portFormatted = port.toInt();
-    //w->GetMQTTPlantClient()->setPort(portFormatted);
-
-    const QString clientID = ui->clientIDLineEdit->text();
-    //w->GetMQTTPlantClient()->setClientId(clientID);
-
-    const QString username = ui->usernameLineEdit->text();
-    //w->GetMQTTPlantClient()->setUsername(username);
-
-    const QString password = ui->passwordLineEdit->text();
-    //w->GetMQTTPlantClient()->setPassword(password);
-
-    //w->GetMQTTPlantClient()->connectToHost();
+    hostname = ui->hostnameLineEdit->text();
+    const QString portInput = ui->portLineEdit->text();
+    port = portInput.toInt();
+    clientID = ui->clientIDLineEdit->text();
+    username = ui->usernameLineEdit->text();
+    password = ui->passwordLineEdit->text();
 
     //QMessageBox::information(this, QLatin1String("Error"), QLatin1String("Can't proceed to establish a connection because QMqttClient was never instantiated."));
 
-    close();
+    done(1);
 }
 
 void ConnectPlantDialog::on_cancelButton_clicked()
 {
-    close();
+    done(0);
 
     //Apparent other options
+    //accepted();
     //reject();
     //done(0);
     //finished(0);
+    //close();
 }
 
-/*void ConnectPlantDialog::CredentialsApplied()
+QString ConnectPlantDialog::GetHostname()
 {
+    return hostname;
+}
 
-}*/
+quint16 ConnectPlantDialog::GetPort()
+{
+    return port;
+}
+
+QString ConnectPlantDialog::GetClientID()
+{
+    return clientID;
+}
+
+QString ConnectPlantDialog::GetUsername()
+{
+    return username;
+}
+
+QString ConnectPlantDialog::GetPassword()
+{
+    return password;
+}

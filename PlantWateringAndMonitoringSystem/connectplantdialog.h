@@ -15,6 +15,12 @@ public:
     explicit ConnectPlantDialog(QWidget *parent = nullptr);
     ~ConnectPlantDialog();
 
+    QString GetHostname();
+    quint16 GetPort();
+    QString GetClientID();
+    QString GetUsername();
+    QString GetPassword();
+
     //void SetMainWindow(MainWindow* MainWindowIn);
 
 private slots:
@@ -26,10 +32,15 @@ private slots:
 private:
     Ui::ConnectPlantDialog *ui;
 
-    //MainWindow* w;
+    //Credentials
+    QString hostname;
+    quint16 port;
+    QString clientID;
+    QString username;
+    QString password;
 
-signals:
-    void CredentialsApplied();
+//signals:
+    //void CredentialsApplied();
 };
 
 #endif // CONNECTPLANTDIALOG_H

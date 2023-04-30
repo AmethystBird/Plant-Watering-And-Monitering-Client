@@ -40,10 +40,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     //MQTT
     ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
-    DebugMQTT();
+    CreateMQTTClient();
+    //DebugMQTT();
 
     //Signals
-    QObject::connect(&dlg, SIGNAL(CredentialsApplied()), this, SIGNAL(GetMQTTPlantClient())); //Connects click event of apply button to credentials applied function
+    //QObject::connect(&dlg, SIGNAL(CredentialsApplied()), this, SIGNAL(GetMQTTPlantClient())); //Connects click event of apply button to credentials applied function
 }
 
 MainWindow::~MainWindow()
@@ -305,11 +306,27 @@ void MainWindow::on_connectPlantButton_clicked()
     //ConnectPlantDialog dlg(this);
     dlg.setModal(true);
     //dlg.SetMainWindow(this);
-    dlg.exec();
+    int result = dlg.exec();
+    if (result == 1)
+    {
+        QMessageBox::information(this, QLatin1String("on_connectPlantButton_clicked()"), QLatin1String("result: 1"));
+
+        GetMQTTPlantClient()->setHostname(dlg.GetHostname());
+        GetMQTTPlantClient()->setPort(dlg.GetPort());
+        GetMQTTPlantClient()->setClientId(dlg.GetClientID());
+        GetMQTTPlantClient()->setUsername(dlg.GetUsername());
+        GetMQTTPlantClient()->setPassword(dlg.GetPassword());
+        GetMQTTPlantClient()->connectToHost();
+        Subscribe();
+    }
+    else
+    {
+        QMessageBox::information(this, QLatin1String("on_connectPlantButton_clicked()"), QLatin1String("result: not 1"));
+    }
 }
 
 QMqttClient* MainWindow::GetMQTTPlantClient()
 {
-    QMessageBox::information(this, QLatin1String("GetMQTTPlantClient()"), QLatin1String("Executed by proxy"));
+    //QMessageBox::information(this, QLatin1String("GetMQTTPlantClient()"), QLatin1String("Executed by proxy"));
     return MQTTPlantClient;
 }
