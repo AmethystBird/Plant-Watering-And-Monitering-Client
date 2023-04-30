@@ -17,13 +17,17 @@ MainWindow::MainWindow(QWidget *parent)
     ToggleDisplayMode();
     ui->darkModeCheckBox->setChecked(true);
 
-    series = new QLineSeries();
+    /*series = new QLineSeries();
     series->append(0, 6);
     series->append(2, 4);
     series->append(3, 8);
     series->append(7, 4);
     series->append(10, 5);
-    *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
+    *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);*/
+
+    series = new QLineSeries();
+    //series->append(0, 6);
+    //series->append(2, 4);
 
     chart = new QChart();
     chart->legend()->hide();
@@ -33,8 +37,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setUpdatesEnabled(true);
 
-    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    //chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     ui->verticalLayout->addWidget(chartView);
 
@@ -185,11 +190,11 @@ void MainWindow::CreateMQTTClient()
 
     connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
     connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
-    //connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
+    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
     connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
 
     //test
-    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
+    /*connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
         const QString content = QDateTime::currentDateTime().toString()
                                 + QLatin1String(" Received Topic: ")
                                 + topic.name()
@@ -198,7 +203,7 @@ void MainWindow::CreateMQTTClient()
                                 + QLatin1Char('\n');
         ui->telemetryDebugLabel->setText(content);
     });
-
+    */
     //MQTTPlantClient->connectToHost();
 }
 
@@ -265,11 +270,15 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     chart->addSeries(series2);
     chart->createDefaultAxes();*/
 
-    chart->removeSeries(series);
-    series->append(4, 8);
+    series = new QLineSeries();
+    series->append(2, 8);
+    series->append(4, 3);
+    series->append(6, 7);
+
+    chart->removeAllSeries();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    chartView->update();
+    chart->update();
 
     /*quint16 extractionDeterminer = 0;
     for (quint16 i = 0; i < message.size(); i++)
@@ -304,24 +313,28 @@ void MainWindow::on_connectPlantButton_clicked()
     //CreateMQTTClient();
     //Subscribe();
     //ConnectPlantDialog dlg(this);
-    dlg.setModal(true);
-    //dlg.SetMainWindow(this);
-    int result = dlg.exec();
-    if (result == 1)
-    {
-        QMessageBox::information(this, QLatin1String("on_connectPlantButton_clicked()"), QLatin1String("result: 1"));
 
-        GetMQTTPlantClient()->setHostname(dlg.GetHostname());
-        GetMQTTPlantClient()->setPort(dlg.GetPort());
-        GetMQTTPlantClient()->setClientId(dlg.GetClientID());
-        GetMQTTPlantClient()->setUsername(dlg.GetUsername());
-        GetMQTTPlantClient()->setPassword(dlg.GetPassword());
-        GetMQTTPlantClient()->connectToHost();
-        Subscribe();
-    }
-    else
+    if (ui->connectPlantButton->text() == "Connect Plant") //Connect to MQTT server
     {
-        QMessageBox::information(this, QLatin1String("on_connectPlantButton_clicked()"), QLatin1String("result: not 1"));
+        dlg.setModal(true);
+        //dlg.SetMainWindow(this);
+        int result = dlg.exec();
+        if (result == 1)
+        {
+            GetMQTTPlantClient()->setHostname(dlg.GetHostname());
+            GetMQTTPlantClient()->setPort(dlg.GetPort());
+            GetMQTTPlantClient()->setClientId(dlg.GetClientID());
+            GetMQTTPlantClient()->setUsername(dlg.GetUsername());
+            GetMQTTPlantClient()->setPassword(dlg.GetPassword());
+            GetMQTTPlantClient()->connectToHost();
+            Subscribe();
+            ui->connectPlantButton->setText("Disconnect Plant");
+        }
+    }
+    else //Disconnect from MQTT server
+    {
+        MQTTPlantClient->disconnectFromHost();
+        ui->connectPlantButton->setText("Connect Plant");
     }
 }
 

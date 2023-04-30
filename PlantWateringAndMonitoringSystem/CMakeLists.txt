@@ -43,6 +43,9 @@ set(PROJECT_SOURCES
         connectplantdialog.h
         connectplantdialog.cpp
         connectplantdialog.ui
+        addtopicdialog.h
+        addtopicdialog.cpp
+        addtopicdialog.ui
 )
 
 #Conditionally use the SDK trusted certs in the samples
