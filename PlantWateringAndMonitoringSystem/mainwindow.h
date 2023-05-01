@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "QtMqtt/qmqttclient.h"
+#include "addtopicdialog.h"
 #include "connectplantdialog.h"
 #include "qchart.h"
 #include "qchartview.h"
@@ -30,6 +31,8 @@ private slots:
 
     void on_connectPlantButton_clicked();
 
+    void on_addTopicButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -40,7 +43,7 @@ private:
     bool displayMode;
 
     void CreateMQTTClient();
-    void Subscribe();
+    void Subscribe(QString topic);
     void ReceiveTest();
     void DebugMQTT();
 
@@ -52,7 +55,8 @@ private:
 
     qint16 receivedTelemetry;
 
-    ConnectPlantDialog dlg;
+    ConnectPlantDialog connectPlantDialogBox;
+    addTopicDialog addTopicDialogBox;
 
     //Chart
     QChart *chart;

@@ -15,8 +15,17 @@ public:
     explicit addTopicDialog(QWidget *parent = nullptr);
     ~addTopicDialog();
 
+    QString GetTopic();
+
+private slots:
+    void on_applyButton_clicked();
+
+    void on_cancelButton_clicked();
+
 private:
     Ui::addTopicDialog *ui;
+
+    QString topic;
 };
 
 #endif // ADDTOPICDIALOG_H

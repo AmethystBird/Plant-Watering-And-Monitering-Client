@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QMessageBox"
-#include "ui_connectplantdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
@@ -10,7 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), dlg(this)
+    , ui(new Ui::MainWindow), connectPlantDialogBox(this), addTopicDialogBox(this)
 {
     ui->setupUi(this);
 
@@ -163,7 +162,7 @@ void MainWindow::DebugMQTT()
     });
 
     MQTTPlantClient->connectToHost();
-    Subscribe();
+    //Subscribe();
 }
 
 void MainWindow::CreateMQTTClient()
@@ -212,7 +211,7 @@ void MainWindow::CreateMQTTClient()
     //MQTTPlantClient->connectToHost();
 }
 
-void MainWindow::Subscribe()
+void MainWindow::Subscribe(QString topic)
 {
     if (!MQTTPlantSubscription)
     {
@@ -226,8 +225,8 @@ void MainWindow::Subscribe()
     //const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
     //auto topic = new QMqttTopicFilter("chilli/light");
 
-    const QString topic2 = "chilli/light";
-    MQTTPlantSubscription = MQTTPlantClient->subscribe(topic2, 0); //0; message loss can occur
+    //const QString topic = "chilli/light";
+    MQTTPlantSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
 }
 
 void MainWindow::ReceiveTest()
@@ -384,18 +383,18 @@ void MainWindow::on_connectPlantButton_clicked()
 
     if (ui->connectPlantButton->text() == "Connect Plant") //Connect to MQTT server
     {
-        dlg.setModal(true);
+        connectPlantDialogBox.setModal(true);
         //dlg.SetMainWindow(this);
-        int result = dlg.exec();
+        int result = connectPlantDialogBox.exec();
         if (result == 1)
         {
-            GetMQTTPlantClient()->setHostname(dlg.GetHostname());
-            GetMQTTPlantClient()->setPort(dlg.GetPort());
-            GetMQTTPlantClient()->setClientId(dlg.GetClientID());
-            GetMQTTPlantClient()->setUsername(dlg.GetUsername());
-            GetMQTTPlantClient()->setPassword(dlg.GetPassword());
+            GetMQTTPlantClient()->setHostname(connectPlantDialogBox.GetHostname());
+            GetMQTTPlantClient()->setPort(connectPlantDialogBox.GetPort());
+            GetMQTTPlantClient()->setClientId(connectPlantDialogBox.GetClientID());
+            GetMQTTPlantClient()->setUsername(connectPlantDialogBox.GetUsername());
+            GetMQTTPlantClient()->setPassword(connectPlantDialogBox.GetPassword());
             GetMQTTPlantClient()->connectToHost();
-            Subscribe();
+            //Subscribe();
             ui->connectPlantButton->setText("Disconnect Plant");
         }
     }
@@ -411,3 +410,19 @@ QMqttClient* MainWindow::GetMQTTPlantClient()
     //QMessageBox::information(this, QLatin1String("GetMQTTPlantClient()"), QLatin1String("Executed by proxy"));
     return MQTTPlantClient;
 }
+
+void MainWindow::on_addTopicButton_clicked()
+{
+    if (!MQTTPlantClient) {
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("No connection has been established to an MQTT server."));
+        return;
+    }
+
+    addTopicDialogBox.setModal(true);
+    int result = addTopicDialogBox.exec();
+    if (result == 1)
+    {
+        Subscribe(addTopicDialogBox.GetTopic());
+    }
+}
+

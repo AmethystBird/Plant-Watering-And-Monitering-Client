@@ -59,7 +59,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="hostnameLineEdit"/>
+     <widget class="QLineEdit" name="topicLineEdit"/>
     </item>
    </layout>
   </widget>
