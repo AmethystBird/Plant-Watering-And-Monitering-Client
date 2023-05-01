@@ -335,15 +335,20 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
 
     ui->telemetryDebugLabel->setText((const QString)value + " " + (const QString)hours + " " + (const QString)minutes + " " + (const QString)seconds);
 
-    int time = hours.toInt() + minutes.toInt() + seconds.toInt();
+    //int time = hours.toInt() + minutes.toInt() + seconds.toInt();
     float valueDisplay = value.toFloat();
 
+    QTime timeDisplay(hours.toInt(), minutes.toInt(), seconds.toInt());
+    //QTime timeDisplay();
+
     //Append data
-    if (seriesValues.size() < 64) //& by implication 'seriesTimes'
+    if (seriesValues.size() > 63) //& by implication 'seriesTimes'
     {
-        seriesValues.push_back(valueDisplay);
-        seriesTimes.push_back(time);
+        seriesValues.erase(seriesValues.begin(), seriesValues.begin()+1);
+        seriesTimes.erase(seriesTimes.begin(), seriesTimes.begin()+1);
     }
+    seriesValues.push_back(valueDisplay);
+    seriesTimes.push_back(timeDisplay.msecsSinceStartOfDay());
 
     series = new QLineSeries();
     for (int i = 0; i < seriesValues.size(); i++) //& by implication 'seriesTimes'

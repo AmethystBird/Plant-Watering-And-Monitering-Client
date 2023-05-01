@@ -7,6 +7,7 @@
 #include "qchartview.h"
 #include "qlineseries.h"
 #include <QMainWindow>
+#include <queue>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
