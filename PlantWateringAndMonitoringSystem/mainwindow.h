@@ -57,7 +57,8 @@ private:
     QChart *chart;
     QLineSeries *series;
     QChartView *chartView;
-    std::vector<float> seriesData;
+    std::vector<float> seriesValues;
+    std::vector<int> seriesTimes;
 };
 #endif // MAINWINDOW_H
 

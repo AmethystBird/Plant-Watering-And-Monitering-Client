@@ -276,10 +276,10 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     chart->createDefaultAxes();*/
 
     //Temporary data
-    series = new QLineSeries();
+    /*series = new QLineSeries();
     series->append(2, 8);
     series->append(4, 3);
-    series->append(6, 7);
+    series->append(6, 7);*/
 
     //Formatting of data
     //quint16 extractionDeterminer = 0;
@@ -335,11 +335,21 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
 
     ui->telemetryDebugLabel->setText((const QString)value + " " + (const QString)hours + " " + (const QString)minutes + " " + (const QString)seconds);
 
-    //Append data
-    /*for (int i = 0; i < seriesData.size(); i++)
-    {
+    int time = hours.toInt() + minutes.toInt() + seconds.toInt();
+    float valueDisplay = value.toFloat();
 
-    }*/
+    //Append data
+    if (seriesValues.size() < 64) //& by implication 'seriesTimes'
+    {
+        seriesValues.push_back(valueDisplay);
+        seriesTimes.push_back(time);
+    }
+
+    series = new QLineSeries();
+    for (int i = 0; i < seriesValues.size(); i++) //& by implication 'seriesTimes'
+    {
+        series->append(seriesTimes[i], seriesValues[i]);
+    }
 
     chart->removeAllSeries();
     chart->addSeries(series);
