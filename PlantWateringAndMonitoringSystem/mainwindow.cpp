@@ -394,7 +394,7 @@ void MainWindow::on_connectPlantButton_clicked()
             GetMQTTPlantClient()->setUsername(connectPlantDialogBox.GetUsername());
             GetMQTTPlantClient()->setPassword(connectPlantDialogBox.GetPassword());
             GetMQTTPlantClient()->connectToHost();
-            //Subscribe();
+            Subscribe("chilli/light");
             ui->connectPlantButton->setText("Disconnect Plant");
         }
     }
