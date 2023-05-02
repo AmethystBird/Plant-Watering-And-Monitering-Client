@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     //chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     ui->verticalLayout->addWidget(chartView);
+    //VBoxLayout layout = ui->tabWidget(0);
 
     //MQTT
     ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
@@ -50,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Signals
     //QObject::connect(&dlg, SIGNAL(CredentialsApplied()), this, SIGNAL(GetMQTTPlantClient())); //Connects click event of apply button to credentials applied function
+
+    seriesToDisplay = 0;
 }
 
 MainWindow::~MainWindow()
@@ -216,17 +219,43 @@ void MainWindow::Subscribe(QString topic)
     if (!MQTTPlantSubscription)
     {
         QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
-        return;
-    }
-    else {
+        //return;
+    } else {
         QMessageBox::information(this, QLatin1String("Success"), QLatin1String("Successfully subscribed!"));
     }
 
+    //Topic* pogg = new Topic();
+    //topics.insert(topic, *pogg);
+    //topics.emplace(topic, new Topic());
+
+    //topics[topic] = dynamicTopic;
     //const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
     //auto topic = new QMqttTopicFilter("chilli/light");
 
     //const QString topic = "chilli/light";
+
+    //Dynamic version:
+    //Topic dynamicTopic;
+    //topics.emplace(topic, dynamicTopic);
+
     MQTTPlantSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
+}
+
+void MainWindow::Unsubscribe(QString topic)
+{
+    if (!MQTTPlantSubscription)
+    {
+        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not unsubscribe. Is there a valid connection?"));
+        //return;
+    } else {
+        QMessageBox::information(this, QLatin1String("Success"), QLatin1String("Successfully unsubscribed."));
+    }
+
+    //topics.erase(topic); //dynamic version
+
+    //const QString topic = "chilli/light";
+
+    MQTTPlantClient->unsubscribe(topic);
 }
 
 void MainWindow::ReceiveTest()
@@ -340,25 +369,84 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
     QTime timeDisplay(hours.toInt(), minutes.toInt(), seconds.toInt());
     //QTime timeDisplay();
 
-    //Append data
-    if (seriesValues.size() > 63) //& by implication 'seriesTimes'
+    /*
+    std::vector<float> seriesValuesLight;
+    std::vector<int> seriesTimesLight;
+
+    std::vector<float> seriesValuesTemperature;
+    std::vector<int> seriesTimesTemperature;
+
+    std::vector<float> seriesValuesHumidity;
+    std::vector<int> seriesTimesHumidity;
+
+    std::vector<float> seriesValuesMoisture;
+    std::vector<int> seriesTimesMoisture;
+    */
+
+    //For non-dynamic version
+    //Light
+    if (seriesValuesLight.size() > 63) //& by implication 'seriesTimes'
     {
-        seriesValues.erase(seriesValues.begin(), seriesValues.begin()+1);
-        seriesTimes.erase(seriesTimes.begin(), seriesTimes.begin()+1);
+        seriesValuesLight.erase(seriesValuesLight.begin(), seriesValuesLight.begin()+1);
+        seriesTimesLight.erase(seriesTimesLight.begin(), seriesTimesLight.begin()+1);
     }
-    seriesValues.push_back(valueDisplay);
-    seriesTimes.push_back(timeDisplay.msecsSinceStartOfDay());
+    seriesValuesLight.push_back(valueDisplay);
+    seriesTimesLight.push_back(timeDisplay.msecsSinceStartOfDay());
+
+    //Temperature
+    if (seriesValuesTemperature.size() > 63) //& by implication 'seriesTimes'
+    {
+        seriesValuesTemperature.erase(seriesValuesTemperature.begin(), seriesValuesTemperature.begin()+1);
+        seriesTimesTemperature.erase(seriesTimesTemperature.begin(), seriesTimesTemperature.begin()+1);
+    }
+    seriesValuesTemperature.push_back(valueDisplay);
+    seriesTimesTemperature.push_back(timeDisplay.msecsSinceStartOfDay());
+
+    //Humidity
+    if (seriesValuesHumidity.size() > 63) //& by implication 'seriesTimes'
+    {
+        seriesValuesHumidity.erase(seriesValuesHumidity.begin(), seriesValuesHumidity.begin()+1);
+        seriesTimesHumidity.erase(seriesTimesHumidity.begin(), seriesTimesHumidity.begin()+1);
+    }
+    seriesValuesHumidity.push_back(valueDisplay);
+    seriesTimesHumidity.push_back(timeDisplay.msecsSinceStartOfDay());
+
+    //Moisture
+    if (seriesValuesMoisture.size() > 63) //& by implication 'seriesTimes'
+    {
+        seriesValuesMoisture.erase(seriesValuesMoisture.begin(), seriesValuesMoisture.begin()+1);
+        seriesTimesMoisture.erase(seriesTimesMoisture.begin(), seriesTimesMoisture.begin()+1);
+    }
+    seriesValuesMoisture.push_back(valueDisplay);
+    seriesTimesMoisture.push_back(timeDisplay.msecsSinceStartOfDay());
+
+    RefreshGraph();
+
+    //For dynamic version
+    /*if (topics.find(topic.name()) == topics.end())
+    {
+        return;
+    }
+
+    //Append data
+    if (topics.at(topic.name()).seriesValues.size() > 63) //& by implication 'seriesTimes'
+    {
+        topics.at(topic.name()).seriesValues.erase(topics.at(topic.name()).seriesValues.begin(), topics.at(topic.name()).seriesValues.begin()+1);
+        topics.at(topic.name()).seriesTimes.erase(topics.at(topic.name()).seriesTimes.begin(), topics.at(topic.name()).seriesTimes.begin()+1);
+    }
+    topics.at(topic.name()).seriesValues.push_back(valueDisplay);
+    topics.at(topic.name()).seriesTimes.push_back(timeDisplay.msecsSinceStartOfDay());
 
     series = new QLineSeries();
-    for (int i = 0; i < seriesValues.size(); i++) //& by implication 'seriesTimes'
+    for (int i2 = 0; i2 < topics.at(topic.name()).seriesValues.size(); i2++) //& by implication 'seriesTimes'
     {
-        series->append(seriesTimes[i], seriesValues[i]);
-    }
+        series->append(topics.at(topic.name()).seriesTimes[i2], topics.at(topic.name()).seriesValues[i2]);
+    }*/
 
-    chart->removeAllSeries();
+    /*chart->removeAllSeries();
     chart->addSeries(series);
     chart->createDefaultAxes();
-    chart->update();
+    chart->update();*/
 
     //series->append()
     //ui->telemetryDebugLabel->setText((const QString)message);
@@ -394,7 +482,17 @@ void MainWindow::on_connectPlantButton_clicked()
             GetMQTTPlantClient()->setUsername(connectPlantDialogBox.GetUsername());
             GetMQTTPlantClient()->setPassword(connectPlantDialogBox.GetPassword());
             GetMQTTPlantClient()->connectToHost();
-            //Subscribe();
+            /*Subscribe("chilli/light");
+            Subscribe("chilli/temperature");
+            Subscribe("chilli/humidity");
+            Subscribe("chilli/moisture");*/
+
+            //currently hardcoded; will change if dynamic
+            MQTTPlantSubscription = MQTTPlantClient->subscribe((QString)"chilli/light", 0); //0; message loss can occur
+            //MQTTPlantSubscription = MQTTPlantClient->subscribe((QString)"chilli/temperature", 0);
+            //MQTTPlantSubscription = MQTTPlantClient->subscribe((QString)"chilli/humidity", 0);
+            //MQTTPlantSubscription = MQTTPlantClient->subscribe((QString)"chilli/moisture", 0);
+
             ui->connectPlantButton->setText("Disconnect Plant");
         }
     }
@@ -411,8 +509,11 @@ QMqttClient* MainWindow::GetMQTTPlantClient()
     return MQTTPlantClient;
 }
 
+//Used for dynamic updating of topics
 void MainWindow::on_addTopicButton_clicked()
 {
+    return;
+    /*
     if (!MQTTPlantClient) {
         QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("No connection has been established to an MQTT server."));
         return;
@@ -422,7 +523,74 @@ void MainWindow::on_addTopicButton_clicked()
     int result = addTopicDialogBox.exec();
     if (result == 1)
     {
+        if (topics.find(addTopicDialogBox.GetTopic()) != topics.end())
+        {
+            Unsubscribe(addTopicDialogBox.GetTopic());
+            return;
+        }
         Subscribe(addTopicDialogBox.GetTopic());
-    }
+    }*/
 }
 
+void MainWindow::RefreshGraph()
+{
+    series = new QLineSeries();
+
+    if (seriesToDisplay == 0)
+    {
+        for (int i2 = 0; i2 < seriesValuesLight.size(); i2++) //& by implication 'seriesTimes'
+        {
+            series->append(seriesTimesLight[i2], seriesValuesLight[i2]);
+        }
+    }
+    else if (seriesToDisplay == 1)
+    {
+        for (int i2 = 0; i2 < seriesValuesTemperature.size(); i2++) //& by implication 'seriesTimes'
+        {
+            series->append(seriesTimesTemperature[i2], seriesValuesTemperature[i2]);
+        }
+    }
+    else if (seriesToDisplay == 2)
+    {
+        for (int i2 = 0; i2 < seriesValuesHumidity.size(); i2++) //& by implication 'seriesTimes'
+        {
+            series->append(seriesTimesHumidity[i2], seriesValuesHumidity[i2]);
+        }
+    }
+    else if (seriesToDisplay == 3)
+    {
+        for (int i2 = 0; i2 < seriesValuesMoisture.size(); i2++) //& by implication 'seriesTimes'
+        {
+            series->append(seriesTimesMoisture[i2], seriesValuesMoisture[i2]);
+        }
+    }
+
+    chart->removeAllSeries();
+    chart->addSeries(series);
+    chart->createDefaultAxes();
+    chart->update();
+}
+
+void MainWindow::on_lightButton_clicked()
+{
+    seriesToDisplay = 0;
+    RefreshGraph();
+}
+
+void MainWindow::on_moistureButton_clicked()
+{
+    seriesToDisplay = 3;
+    RefreshGraph();
+}
+
+void MainWindow::on_temperatureButton_clicked()
+{
+    seriesToDisplay = 1;
+    RefreshGraph();
+}
+
+void MainWindow::on_humidityButton_clicked()
+{
+    seriesToDisplay = 2;
+    RefreshGraph();
+}
