@@ -57,6 +57,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    if (MQTTPlantClient->Connected)
+    {
+        MQTTPlantClient->disconnectFromHost();
+    }
     delete ui;
 }
 
@@ -271,6 +275,14 @@ void MainWindow::StateChanged()
 {
     receivedTelemetry = MQTTPlantClient->state();
     ui->titleLabel->setText(QString::number(receivedTelemetry));
+
+    switch(receivedTelemetry) {
+    case 2:
+        MQTTLightSubscription = MQTTPlantClient->subscribe(QMqttTopicFilter{"chilli/#"}, 0); //0; message loss can occur
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::Disconnected()
@@ -476,7 +488,6 @@ void MainWindow::on_connectPlantButton_clicked()
 
             //const QMqttTopicFilter topic = (QMqttTopicFilter)"chilli/light";
             //const QString topic = "chilli/light";
-            MQTTLightSubscription = MQTTPlantClient->subscribe(QMqttTopicFilter{"chilli/light"}, 0); //0; message loss can occur
             //MQTTLightSubscription = MQTTPlantClient->subscribe((QString)"chilli/light", 0); //0; message loss can occur
             /*const QMqttTopicFilter topic2 = (QMqttTopicFilter)"chilli/temperature";
             MQTTTemperatureSubscription = MQTTPlantClient->subscribe(topic2, 0);
