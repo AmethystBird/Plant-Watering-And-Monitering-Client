@@ -45,7 +45,6 @@ private:
     Ui::MainWindow *ui;
 
     QMqttClient* MQTTPlantClient;
-    //QMqttSubscription* MQTTPlantSubscription;
     QMqttSubscription* MQTTLightSubscription;
     QMqttSubscription* MQTTTemperatureSubscription;
     QMqttSubscription* MQTTHumiditySubscription;
@@ -55,9 +54,6 @@ private:
     bool displayMode;
 
     void CreateMQTTClient();
-    //void Subscribe(QString topic);
-    void ReceiveTest();
-    void DebugMQTT();
     void RefreshGraph();
 
     //Callback bound methods
@@ -65,8 +61,6 @@ private:
     void Disconnected();
     void Received(const QByteArray &message, const QMqttTopicName &topic);
     void Pinged();
-
-    qint16 receivedTelemetry;
 
     ConnectPlantDialog connectPlantDialogBox;
     addTopicDialog addTopicDialogBox;
@@ -91,9 +85,3 @@ private:
     int seriesToDisplay;
 };
 #endif // MAINWINDOW_H
-
-/*
-    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
-    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
-    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
-*/

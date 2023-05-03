@@ -23,8 +23,6 @@ public:
 
     Ui::ConnectPlantDialog* GetUI();
 
-    //void SetMainWindow(MainWindow* MainWindowIn);
-
 private slots:
 
     void on_applyButton_clicked();
@@ -40,9 +38,6 @@ private:
     QString clientID;
     QString username;
     QString password;
-
-//signals:
-    //void CredentialsApplied();
 };
 
 #endif // CONNECTPLANTDIALOG_H
