@@ -238,8 +238,26 @@ void MainWindow::ReceiveTest()
 //Update telemetry
 void MainWindow::StateChanged()
 {
+    qInfo() << "StateChanged()";
     receivedTelemetry = MQTTPlantClient->state();
     ui->titleLabel->setText(QString::number(receivedTelemetry));
+    qInfo() << receivedTelemetry;
+
+    QString topic = "";
+
+    switch(receivedTelemetry) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            topic = "chilli/light";
+            MQTTPlantSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
+            ui->connectPlantButton->setText("Disconnect Plant");
+            break;
+        default:
+            break;
+    }
 }
 
 void MainWindow::Disconnected()
@@ -394,8 +412,7 @@ void MainWindow::on_connectPlantButton_clicked()
             GetMQTTPlantClient()->setUsername(connectPlantDialogBox.GetUsername());
             GetMQTTPlantClient()->setPassword(connectPlantDialogBox.GetPassword());
             GetMQTTPlantClient()->connectToHost();
-            Subscribe("chilli/light");
-            ui->connectPlantButton->setText("Disconnect Plant");
+            //Subscribe("chilli/light");
         }
     }
     else //Disconnect from MQTT server
