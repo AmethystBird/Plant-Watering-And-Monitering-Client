@@ -33,27 +33,34 @@ private slots:
 
     void on_addTopicButton_clicked();
 
+    void on_lightButton_clicked();
+
+    void on_moistureButton_clicked();
+
+    void on_temperatureButton_clicked();
+
+    void on_humidityButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
     QMqttClient* MQTTPlantClient;
-    QMqttSubscription* MQTTPlantSubscription;
+    QMqttSubscription* MQTTLightSubscription;
+    QMqttSubscription* MQTTTemperatureSubscription;
+    QMqttSubscription* MQTTHumiditySubscription;
+    QMqttSubscription* MQTTMoistureSubscription;
 
     void ToggleDisplayMode();
     bool displayMode;
 
     void CreateMQTTClient();
-    void Subscribe(QString topic);
-    void ReceiveTest();
-    void DebugMQTT();
+    void RefreshGraph();
 
     //Callback bound methods
     void StateChanged();
     void Disconnected();
     void Received(const QByteArray &message, const QMqttTopicName &topic);
     void Pinged();
-
-    qint16 receivedTelemetry;
 
     ConnectPlantDialog connectPlantDialogBox;
     addTopicDialog addTopicDialogBox;
@@ -62,13 +69,19 @@ private:
     QChart *chart;
     QLineSeries *series;
     QChartView *chartView;
-    std::vector<float> seriesValues;
-    std::vector<int> seriesTimes;
+
+    std::vector<float> seriesValuesLight;
+    std::vector<int> seriesTimesLight;
+
+    std::vector<float> seriesValuesTemperature;
+    std::vector<int> seriesTimesTemperature;
+
+    std::vector<float> seriesValuesHumidity;
+    std::vector<int> seriesTimesHumidity;
+
+    std::vector<float> seriesValuesMoisture;
+    std::vector<int> seriesTimesMoisture;
+
+    int seriesToDisplay;
 };
 #endif // MAINWINDOW_H
-
-/*
-    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
-    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
-    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
-*/

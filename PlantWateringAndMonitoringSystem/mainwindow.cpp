@@ -5,7 +5,7 @@
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtMqtt/QtMqtt>
-//#include <QtMqtt/QMqttSubscription>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,17 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ToggleDisplayMode();
     ui->darkModeCheckBox->setChecked(true);
 
-    /*series = new QLineSeries();
-    series->append(0, 6);
-    series->append(2, 4);
-    series->append(3, 8);
-    series->append(7, 4);
-    series->append(10, 5);
-    *series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);*/
-
     series = new QLineSeries();
-    //series->append(0, 6);
-    //series->append(2, 4);
 
     chart = new QChart();
     chart->legend()->hide();
@@ -39,21 +29,21 @@ MainWindow::MainWindow(QWidget *parent)
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->setUpdatesEnabled(true);
 
-    //chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
     ui->verticalLayout->addWidget(chartView);
 
     //MQTT
-    ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
+    //ui->telemetryDebugLabel->setStyleSheet("color: #ff0080");
     CreateMQTTClient();
-    //DebugMQTT();
 
-    //Signals
-    //QObject::connect(&dlg, SIGNAL(CredentialsApplied()), this, SIGNAL(GetMQTTPlantClient())); //Connects click event of apply button to credentials applied function
+    seriesToDisplay = 0;
 }
 
 MainWindow::~MainWindow()
 {
+    if (MQTTPlantClient->Connected)
+    {
+        MQTTPlantClient->disconnectFromHost();
+    }
     delete ui;
 }
 
@@ -64,8 +54,6 @@ void MainWindow::ToggleDisplayMode()
     {
         setStyleSheet("background-color: #101010");
         ui->titleLabel->setStyleSheet("color: #f0f0f0");
-        //ui->optionsMenuFrame->setVisible(false);
-        //ui->optionsMenuFrame->setStyleSheet("background-color: #202020");
         ui->optionsLabel->setStyleSheet("color: #e0e0e0");
         ui->networkingLabel->setStyleSheet("color: #e0e0e0");
         ui->preferencesLabel->setStyleSheet("color: #e0e0e0");
@@ -88,8 +76,6 @@ void MainWindow::ToggleDisplayMode()
     {
         setStyleSheet("background-color: #f0f0f0");
         ui->titleLabel->setStyleSheet("color: #101010");
-        //ui->optionsMenuFrame->setVisible(false);
-        //ui->optionsMenuFrame->setStyleSheet("background-color: #e0e0e0");
         ui->optionsLabel->setStyleSheet("color: #202020");
         ui->networkingLabel->setStyleSheet("color: #202020");
         ui->preferencesLabel->setStyleSheet("color: #202020");
@@ -108,7 +94,6 @@ void MainWindow::ToggleDisplayMode()
 
 void MainWindow::on_optionsButton_released()
 {
-    //ui->optionsMenuFrame->setVisible(!ui->optionsMenuFrame->isVisible());
     ui->widget->setVisible(!ui->widget->isVisible());
     ui->optionsLabel->setVisible(!ui->optionsLabel->isVisible());
 }
@@ -118,6 +103,7 @@ void MainWindow::on_darkModeCheckBox_released()
     ToggleDisplayMode();
 }
 
+/*
 void MainWindow::DebugMQTT()
 {
     //MQTT subscription setup
@@ -145,25 +131,15 @@ void MainWindow::DebugMQTT()
     const QString password = "1234";
     MQTTPlantClient->setPassword(password);
 
-    connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
-    connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
+    //connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
+    //connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
     //connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
-    connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
-
-    //test
-    connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
-        const QString content = QDateTime::currentDateTime().toString()
-                                + QLatin1String(" Received Topic: ")
-                                + topic.name()
-                                + QLatin1String(" Message: ")
-                                + message
-                                + QLatin1Char('\n');
-        ui->telemetryDebugLabel->setText(content);
-    });
+    //connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
 
     MQTTPlantClient->connectToHost();
     //Subscribe();
 }
+*/
 
 void MainWindow::CreateMQTTClient()
 {
@@ -173,133 +149,77 @@ void MainWindow::CreateMQTTClient()
         QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not instantiate QMqttClient"));
         return;
     }
-    //MQTTPlantSubscription = new QMqttSubscription();
-
-    //Sort these credentials
-    /*const QString hostname = "192.168.1.6";
-    MQTTPlantClient->setHostname(hostname);
-
-    //MQTTPlantClient->setPort(quint16(1883));
-    quint16 port = 1883;
-    MQTTPlantClient->setPort(port);
-
-    const QString clientID = "qt01";
-    MQTTPlantClient->setClientId(clientID);
-
-    const QString username = "qtapp";
-    MQTTPlantClient->setUsername(username);
-
-    const QString password = "1234";
-    MQTTPlantClient->setPassword(password);*/
 
     connect(MQTTPlantClient, &QMqttClient::stateChanged, this, &MainWindow::StateChanged);
     connect(MQTTPlantClient, &QMqttClient::disconnected, this, &MainWindow::Disconnected);
     connect(MQTTPlantClient, &QMqttClient::messageReceived, this, &MainWindow::Received);
     connect(MQTTPlantClient, &QMqttClient::pingResponseReceived, this, &MainWindow::Pinged);
-
-    //test
-    /*connect(MQTTPlantClient, &QMqttClient::messageReceived, this, [this](const QByteArray &message, const QMqttTopicName &topic) {
-        const QString content = QDateTime::currentDateTime().toString()
-                                + QLatin1String(" Received Topic: ")
-                                + topic.name()
-                                + QLatin1String(" Message: ")
-                                + message
-                                + QLatin1Char('\n');
-        ui->telemetryDebugLabel->setText(content);
-    });
-    */
-    //MQTTPlantClient->connectToHost();
 }
 
-void MainWindow::Subscribe(QString topic)
+/*void MainWindow::Subscribe(QString topic)
 {
-    if (!MQTTPlantSubscription)
+    if (topic == "chilli/light")
     {
-        QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
-        return;
+        if (!MQTTLightSubscription)
+        {
+            QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+            return;
+        }
+        MQTTLightSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
     }
-    else {
-        QMessageBox::information(this, QLatin1String("Success"), QLatin1String("Successfully subscribed!"));
+    else if (topic == "chilli/temperature")
+    {
+        if (!MQTTTemperatureSubscription)
+        {
+            QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+            return;
+        }
+        MQTTTemperatureSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
     }
+    else if (topic == "chilli/humidity")
+    {
+        if (!MQTTHumiditySubscription)
+        {
+            QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+            return;
+        }
+        MQTTHumiditySubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
+    }
+    else if (topic == "chilli/moisture")
+    {
+        if (!MQTTMoistureSubscription)
+        {
+            QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+            return;
+        }
+        MQTTMoistureSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
+    }
+}*/
 
-    //const QMqttTopicFilter* topic = new QMqttTopicFilter("chilli/light");
-    //auto topic = new QMqttTopicFilter("chilli/light");
-
-    //const QString topic = "chilli/light";
-    MQTTPlantSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
-}
-
-void MainWindow::ReceiveTest()
-{
-    //QString telemetry = MQTTPlantSubscription->topic().filter();
-    //ui->titleLabel->setText(telemetry);
-}
-
-//Update telemetry
 void MainWindow::StateChanged()
 {
-    qInfo() << "StateChanged()";
-    receivedTelemetry = MQTTPlantClient->state();
-    ui->titleLabel->setText(QString::number(receivedTelemetry));
-    qInfo() << receivedTelemetry;
-
-    QString topic = "";
-
-    switch(receivedTelemetry) {
-        case 0:
-            break;
-        case 1:
-            break;
-        case 2:
-            topic = "chilli/light";
-            MQTTPlantSubscription = MQTTPlantClient->subscribe(topic, 0); //0; message loss can occur
-            ui->connectPlantButton->setText("Disconnect Plant");
-            break;
-        default:
-            break;
+    quint16 state = MQTTPlantClient->state();
+    //Only subscribe once state is '2,' otherwise race condition between connection & subscription may occur
+    switch(state) {
+    case 2:
+        MQTTLightSubscription = MQTTPlantClient->subscribe(QMqttTopicFilter{"chilli/#"}, 0); //0; message loss can occur
+        break;
+    default:
+        break;
     }
 }
 
 void MainWindow::Disconnected()
 {
-    //No particular requirements
     QMessageBox::information(this, QLatin1String("Disconnection"), QLatin1String("Broker server disconnected from client."));
 }
 
 void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic)
 {
-    //No particular requirements
-    //QMessageBox::information(this, QLatin1String("Received()"), QLatin1String("messageReceived() >> Received()"));
-
-    //QDateTime momentInTime = QDateTime::currentDateTime();
-    //QDate date = QDate::currentDate();
-
-    /*QLineSeries *series2 = new QLineSeries();
-    series2->append(4, 8);
-    //*series << QPointF(11, 1) << QPointF(13, 3) << QPointF(17, 6) << QPointF(18, 3) << QPointF(20, 2);
-
-    chart->legend()->hide();
-    chart->addSeries(series2);
-    chart->createDefaultAxes();
-    chart->setTitle("<Sensor Value>");
-
-    chartView->setRenderHint(QPainter::Antialiasing);
-
-    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);*/
-
-    /*QLineSeries *series2 = new QLineSeries();
-    series2->append(5, 10);
-    chart->addSeries(series2);
-    chart->createDefaultAxes();*/
-
-    //Temporary data
-    /*series = new QLineSeries();
-    series->append(2, 8);
-    series->append(4, 3);
-    series->append(6, 7);*/
-
-    //Formatting of data
-    //quint16 extractionDeterminer = 0;
+    if (topic.name() != "chilli/light" && topic.name() != "chilli/temperature" && topic.name() != "chilli/humidity" && topic.name() != "chilli/moisture")
+    {
+        return;
+    }
 
     QString value = "";
     QString hours = "";
@@ -350,36 +270,55 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
         }
     }
 
-    ui->telemetryDebugLabel->setText((const QString)value + " " + (const QString)hours + " " + (const QString)minutes + " " + (const QString)seconds);
-
-    //int time = hours.toInt() + minutes.toInt() + seconds.toInt();
     float valueDisplay = value.toFloat();
-
     QTime timeDisplay(hours.toInt(), minutes.toInt(), seconds.toInt());
-    //QTime timeDisplay();
 
     //Append data
-    if (seriesValues.size() > 63) //& by implication 'seriesTimes'
+    if (topic.name() == "chilli/light")
     {
-        seriesValues.erase(seriesValues.begin(), seriesValues.begin()+1);
-        seriesTimes.erase(seriesTimes.begin(), seriesTimes.begin()+1);
+        if (seriesValuesLight.size() > 63) //& by implication 'seriesTimesLight'
+        {
+            seriesValuesLight.erase(seriesValuesLight.begin(), seriesValuesLight.begin()+1);
+            seriesTimesLight.erase(seriesTimesLight.begin(), seriesTimesLight.begin()+1);
+        }
+        seriesValuesLight.push_back(valueDisplay);
+        seriesTimesLight.push_back(timeDisplay.msecsSinceStartOfDay());
     }
-    seriesValues.push_back(valueDisplay);
-    seriesTimes.push_back(timeDisplay.msecsSinceStartOfDay());
-
-    series = new QLineSeries();
-    for (int i = 0; i < seriesValues.size(); i++) //& by implication 'seriesTimes'
+    else if (topic.name() == "chilli/temperature")
     {
-        series->append(seriesTimes[i], seriesValues[i]);
+        if (seriesValuesTemperature.size() > 63)
+        {
+            seriesValuesTemperature.erase(seriesValuesTemperature.begin(), seriesValuesTemperature.begin()+1);
+            seriesTimesTemperature.erase(seriesTimesTemperature.begin(), seriesTimesTemperature.begin()+1);
+        }
+        seriesValuesTemperature.push_back(valueDisplay);
+        seriesTimesTemperature.push_back(timeDisplay.msecsSinceStartOfDay());
+    }
+    else if (topic.name() == "chilli/humidity")
+    {
+        if (seriesValuesHumidity.size() > 63)
+        {
+            seriesValuesHumidity.erase(seriesValuesHumidity.begin(), seriesValuesHumidity.begin()+1);
+            seriesTimesHumidity.erase(seriesTimesHumidity.begin(), seriesTimesHumidity.begin()+1);
+        }
+        seriesValuesHumidity.push_back(valueDisplay);
+        seriesTimesHumidity.push_back(timeDisplay.msecsSinceStartOfDay());
+    }
+    else if (topic.name() == "chilli/moisture")
+    {
+        if (seriesValuesMoisture.size() > 63)
+        {
+            seriesValuesMoisture.erase(seriesValuesMoisture.begin(), seriesValuesMoisture.begin()+1);
+            seriesTimesMoisture.erase(seriesTimesMoisture.begin(), seriesTimesMoisture.begin()+1);
+        }
+        seriesValuesMoisture.push_back(valueDisplay);
+        seriesTimesMoisture.push_back(timeDisplay.msecsSinceStartOfDay());
+    }
+    else {
+        return;
     }
 
-    chart->removeAllSeries();
-    chart->addSeries(series);
-    chart->createDefaultAxes();
-    chart->update();
-
-    //series->append()
-    //ui->telemetryDebugLabel->setText((const QString)message);
+    RefreshGraph();
 }
 
 void MainWindow::Pinged()
@@ -390,29 +329,38 @@ void MainWindow::Pinged()
 
 void MainWindow::on_connectPlantButton_clicked()
 {
-//    QQuickView* popupWindow = new QQuickView();
-//    popupWindow->setSource(QUrl("qrc:/connectPlantPopupWindow.qml"));
-//    popupWindow->setFlags(Qt::Popup | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-//    popupWindow->show();
-
-    //CreateMQTTClient();
-    //Subscribe();
-    //ConnectPlantDialog dlg(this);
-
     if (ui->connectPlantButton->text() == "Connect Plant") //Connect to MQTT server
     {
         connectPlantDialogBox.setModal(true);
-        //dlg.SetMainWindow(this);
         int result = connectPlantDialogBox.exec();
         if (result == 1)
         {
-            GetMQTTPlantClient()->setHostname(connectPlantDialogBox.GetHostname());
-            GetMQTTPlantClient()->setPort(connectPlantDialogBox.GetPort());
-            GetMQTTPlantClient()->setClientId(connectPlantDialogBox.GetClientID());
-            GetMQTTPlantClient()->setUsername(connectPlantDialogBox.GetUsername());
-            GetMQTTPlantClient()->setPassword(connectPlantDialogBox.GetPassword());
-            GetMQTTPlantClient()->connectToHost();
-            //Subscribe("chilli/light");
+            if (!MQTTPlantClient)
+            {
+                QMessageBox::critical(this, QLatin1String("Error in on_connectPlantButton_clicked()"), QLatin1String("Could not instantiate QMqttClient"));
+                return;
+            }
+            MQTTPlantClient->setHostname(connectPlantDialogBox.GetHostname());
+            MQTTPlantClient->setPort(connectPlantDialogBox.GetPort());
+            MQTTPlantClient->setClientId(connectPlantDialogBox.GetClientID());
+            MQTTPlantClient->setUsername(connectPlantDialogBox.GetUsername());
+            MQTTPlantClient->setPassword(connectPlantDialogBox.GetPassword());
+
+            qInfo() << "Connecting to host";
+            qInfo() << MQTTPlantClient->hostname();
+            qInfo() << MQTTPlantClient->port();
+            qInfo() << MQTTPlantClient->clientId();
+            qInfo() << MQTTPlantClient->username();
+            qInfo() << MQTTPlantClient->password();
+            MQTTPlantClient->connectToHost();
+
+            if (!MQTTLightSubscription)
+            {
+                QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("Could not subscribe. Is there a valid connection?"));
+                return;
+            }
+
+            ui->connectPlantButton->setText("Disconnect Plant");
         }
     }
     else //Disconnect from MQTT server
@@ -422,24 +370,92 @@ void MainWindow::on_connectPlantButton_clicked()
     }
 }
 
-QMqttClient* MainWindow::GetMQTTPlantClient()
-{
-    //QMessageBox::information(this, QLatin1String("GetMQTTPlantClient()"), QLatin1String("Executed by proxy"));
-    return MQTTPlantClient;
-}
-
 void MainWindow::on_addTopicButton_clicked()
 {
     if (!MQTTPlantClient) {
         QMessageBox::critical(this, QLatin1String("Error"), QLatin1String("No connection has been established to an MQTT server."));
         return;
     }
+}
 
-    addTopicDialogBox.setModal(true);
-    int result = addTopicDialogBox.exec();
-    if (result == 1)
+void MainWindow::RefreshGraph()
+{
+    series = new QLineSeries();
+
+    if (seriesToDisplay == 0) //light
     {
-        Subscribe(addTopicDialogBox.GetTopic());
+        for (int i = 0; i < seriesValuesLight.size(); i++) //& by implication 'seriesTimes'
+        {
+            series->append(seriesTimesLight[i], seriesValuesLight[i]);
+        }
+    }
+    else if (seriesToDisplay == 1) //temperature
+    {
+        for (int i = 0; i < seriesValuesTemperature.size(); i++)
+        {
+            series->append(seriesTimesTemperature[i], seriesValuesTemperature[i]);
+        }
+    }
+    else if (seriesToDisplay == 2) //humidity
+    {
+        for (int i = 0; i < seriesValuesHumidity.size(); i++)
+        {
+            series->append(seriesTimesHumidity[i], seriesValuesHumidity[i]);
+        }
+    }
+    else if (seriesToDisplay == 3) //moisture
+    {
+        for (int i = 0; i < seriesValuesMoisture.size(); i++)
+        {
+            series->append(seriesTimesMoisture[i], seriesValuesMoisture[i]);
+        }
+    }
+    else {
+        return;
+    }
+
+    chart->removeAllSeries();
+    chart->addSeries(series);
+    chart->createDefaultAxes();
+    chart->update();
+}
+
+void MainWindow::on_lightButton_clicked()
+{
+    if (seriesToDisplay != 0)
+    {
+        seriesToDisplay = 0;
+        RefreshGraph();
+    }
+}
+
+
+void MainWindow::on_moistureButton_clicked()
+{
+    if (seriesToDisplay != 3)
+    {
+        seriesToDisplay = 3;
+        RefreshGraph();
+    }
+}
+
+
+void MainWindow::on_temperatureButton_clicked()
+{
+    if (seriesToDisplay != 1)
+    {
+        seriesToDisplay = 1;
+        RefreshGraph();
+    }
+}
+
+
+void MainWindow::on_humidityButton_clicked()
+{
+    if (seriesToDisplay != 2)
+    {
+        seriesToDisplay = 2;
+        RefreshGraph();
     }
 }
 
