@@ -1,11 +1,16 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QMessageBox"
+#include "ui_connectplantdialog.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 #include <QtMqtt/QtMqtt>
 #include <QDebug>
+
+//Changes
+//#include <QValueAxis>
+//==--
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,11 +24,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     series = new QLineSeries();
 
+    //Changes
+    //QValueAxis* timeAxis = new QValueAxis;
+    //timeAxis->setLabelFormat("%s");
+    //==--
+
     chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
     chart->createDefaultAxes();
     chart->setTitle("<Sensor Value>");
+
+    //Changes
+    //chartView->chart()->setAxisX(timeAxis, series);
+    //chart->addAxis(timeAxis, Qt::AlignBottom);
+    //==--
 
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -36,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     CreateMQTTClient();
 
     seriesToDisplay = 0;
+    ui->xAxisMeasurementUnitLabel->setText("Approximate\nLumen\n(lm)");
 }
 
 MainWindow::~MainWindow()
@@ -58,7 +74,7 @@ void MainWindow::ToggleDisplayMode()
         ui->networkingLabel->setStyleSheet("color: #e0e0e0");
         ui->preferencesLabel->setStyleSheet("color: #e0e0e0");
         ui->connectPlantButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
-        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
+        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #181818; color: #585858;}");
         ui->darkModeCheckBox->setStyleSheet("color: #e0e0e0");
         ui->hideOnCloseCheckBox->setStyleSheet("color: #e0e0e0");
         ui->sendNotificationsCheckBox->setStyleSheet("color: #e0e0e0");
@@ -67,10 +83,31 @@ void MainWindow::ToggleDisplayMode()
         ui->humidityButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
         ui->temperatureButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
         ui->optionsButton->setStyleSheet("QToolButton {background-color: #202020; color: #e0e0e0;}");
+        ui->xAxisMeasurementUnitLabel->setStyleSheet("color: #e0e0e0");
+        ui->yAxisMeasurementUnitLabel->setStyleSheet("color: #e0e0e0");
 
         //Connect plant dialog
         //Ui::ConnectPlantDialog* connectPlantDialogUI = dlg.GetUI();
         //connectPlantDialogUI->applyButton;
+
+        //Labels
+        connectPlantDialogBox.GetUI()->titleLabel->setStyleSheet("color: #f0f0f0");
+        connectPlantDialogBox.GetUI()->hostnameLabel->setStyleSheet("color: #e0e0e0");
+        connectPlantDialogBox.GetUI()->portLabel->setStyleSheet("color: #e0e0e0");
+        connectPlantDialogBox.GetUI()->clientIDLabel->setStyleSheet("color: #e0e0e0");
+        connectPlantDialogBox.GetUI()->usernameLabel->setStyleSheet("color: #e0e0e0");
+        connectPlantDialogBox.GetUI()->passwordLabel->setStyleSheet("color: #e0e0e0");
+
+        //LineEdits (Textboxes)
+        connectPlantDialogBox.GetUI()->hostnameLineEdit->setStyleSheet("QLineEdit {background-color: #202020; color: #e0e0e0; border: 1px solid #404040;}");
+        connectPlantDialogBox.GetUI()->portLineEdit->setStyleSheet("QLineEdit {background-color: #202020; color: #e0e0e0; border: 1px solid #404040;}");
+        connectPlantDialogBox.GetUI()->clientIDLineEdit->setStyleSheet("QLineEdit {background-color: #202020; color: #e0e0e0; border: 1px solid #404040;}");
+        connectPlantDialogBox.GetUI()->usernameLineEdit->setStyleSheet("QLineEdit {background-color: #202020; color: #e0e0e0; border: 1px solid #404040;}");
+        connectPlantDialogBox.GetUI()->passwordLineEdit->setStyleSheet("QLineEdit {background-color: #202020; color: #e0e0e0; border: 1px solid #404040;}");
+
+        //Buttons
+        connectPlantDialogBox.GetUI()->applyButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
+        connectPlantDialogBox.GetUI()->cancelButton->setStyleSheet("QPushButton {background-color: #202020; color: #e0e0e0;}");
     }
     else
     {
@@ -80,7 +117,7 @@ void MainWindow::ToggleDisplayMode()
         ui->networkingLabel->setStyleSheet("color: #202020");
         ui->preferencesLabel->setStyleSheet("color: #202020");
         ui->connectPlantButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
-        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
+        ui->addTopicButton->setStyleSheet("QPushButton {background-color: #e8e8e8; color: #585858;}");
         ui->darkModeCheckBox->setStyleSheet("color: #202020");
         ui->hideOnCloseCheckBox->setStyleSheet("color: #202020");
         ui->sendNotificationsCheckBox->setStyleSheet("color: #202020");
@@ -89,6 +126,27 @@ void MainWindow::ToggleDisplayMode()
         ui->humidityButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
         ui->temperatureButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
         ui->optionsButton->setStyleSheet("QToolButton {background-color: #e0e0e0; color: #202020;}");
+        ui->xAxisMeasurementUnitLabel->setStyleSheet("color: #202020");
+        ui->yAxisMeasurementUnitLabel->setStyleSheet("color: #202020");
+
+        //Labels
+        connectPlantDialogBox.GetUI()->titleLabel->setStyleSheet("color: #101010");
+        connectPlantDialogBox.GetUI()->hostnameLabel->setStyleSheet("color: #202020");
+        connectPlantDialogBox.GetUI()->portLabel->setStyleSheet("color: #202020");
+        connectPlantDialogBox.GetUI()->clientIDLabel->setStyleSheet("color: #202020");
+        connectPlantDialogBox.GetUI()->usernameLabel->setStyleSheet("color: #202020");
+        connectPlantDialogBox.GetUI()->passwordLabel->setStyleSheet("color: #202020");
+
+        //LineEdits (Textboxes)
+        connectPlantDialogBox.GetUI()->hostnameLineEdit->setStyleSheet("QLineEdit {background-color: #e0e0e0; color: #202020; border: 1px solid #c0c0c0;}");
+        connectPlantDialogBox.GetUI()->portLineEdit->setStyleSheet("QLineEdit {background-color: #e0e0e0; color: #202020; border: 1px solid #c0c0c0;}");
+        connectPlantDialogBox.GetUI()->clientIDLineEdit->setStyleSheet("QLineEdit {background-color: #e0e0e0; color: #202020; border: 1px solid #c0c0c0;}");
+        connectPlantDialogBox.GetUI()->usernameLineEdit->setStyleSheet("QLineEdit {background-color: #e0e0e0; color: #202020; border: 1px solid #c0c0c0;}");
+        connectPlantDialogBox.GetUI()->passwordLineEdit->setStyleSheet("QLineEdit {background-color: #e0e0e0; color: #202020; border: 1px solid #c0c0c0;}");
+
+        //Buttons
+        connectPlantDialogBox.GetUI()->applyButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
+        connectPlantDialogBox.GetUI()->cancelButton->setStyleSheet("QPushButton {background-color: #e0e0e0; color: #202020;}");
     }
 }
 
@@ -282,7 +340,13 @@ void MainWindow::Received(const QByteArray &message, const QMqttTopicName &topic
             seriesTimesLight.erase(seriesTimesLight.begin(), seriesTimesLight.begin()+1);
         }
         seriesValuesLight.push_back(valueDisplay);
+        //seriesTimesLight.push_back(hours + "hrs " + minutes + "mins " + seconds + "secs");
         seriesTimesLight.push_back(timeDisplay.msecsSinceStartOfDay());
+
+        //QString UnifiedTime = hours + minutes + seconds;
+        //QDateTime currentTime;
+        //currentTime.setTime(timeDisplay);
+        //seriesTimesLight.push_back(currentTime.currentSecsSinceEpoch());
     }
     else if (topic.name() == "chilli/temperature")
     {
@@ -426,6 +490,8 @@ void MainWindow::on_lightButton_clicked()
     {
         seriesToDisplay = 0;
         RefreshGraph();
+
+        ui->xAxisMeasurementUnitLabel->setText("Approximate\nLumen\n(lm)");
     }
 }
 
@@ -436,6 +502,8 @@ void MainWindow::on_moistureButton_clicked()
     {
         seriesToDisplay = 3;
         RefreshGraph();
+
+        ui->xAxisMeasurementUnitLabel->setText("RM\n%");
     }
 }
 
@@ -446,6 +514,8 @@ void MainWindow::on_temperatureButton_clicked()
     {
         seriesToDisplay = 1;
         RefreshGraph();
+
+        ui->xAxisMeasurementUnitLabel->setText("Celsius\n(°C)");
     }
 }
 
@@ -456,6 +526,8 @@ void MainWindow::on_humidityButton_clicked()
     {
         seriesToDisplay = 2;
         RefreshGraph();
+
+        ui->xAxisMeasurementUnitLabel->setText("RH\n%");
     }
 }
 

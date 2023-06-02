@@ -71,6 +71,7 @@ private:
     QChartView *chartView;
 
     std::vector<float> seriesValuesLight;
+    //std::vector<QString> seriesTimesLight;
     std::vector<int> seriesTimesLight;
 
     std::vector<float> seriesValuesTemperature;
